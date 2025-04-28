@@ -42,8 +42,8 @@ export function Hero() {
                         </motion.span>
                     </h1>
                     <p className="text-muted-foreground ma x-w-xl mb-8 w-1/2 text-lg md:text-xl">
-                        Because debugging is twice as hard as writing the code in the first place. Buy our premium error fixes and get back to
-                        building features instead of fixing bugs. Your git blame history will thank you.
+                        Because debugging is twice as hard as writing the code in the first place. Buy our "meh okay" items, and get back to
+                        building features instead of fixing bugs. Your team will thank you.
                     </p>
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <Button asChild size="lg" className="bg-red-600 px-8 py-6 text-lg text-white hover:bg-red-700">
