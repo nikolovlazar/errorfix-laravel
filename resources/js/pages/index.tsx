@@ -7,10 +7,10 @@ import { Head } from '@inertiajs/react';
 export default function Welcome({ featuredProducts, allProducts }: { featuredProducts: Product[]; allProducts: Product[] }) {
     return (
         <Layout>
-            <Head title="ErrorFix | Goods from Beyond">
+            <Head title="Unborked | Goods from Beyond">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-                <meta name="description" content="Because Code Breaks and Someone Has to Fix It" />
+                <meta name="description" content="Sometimes things bork, its time to Unbork them." />
             </Head>
             <div className="space-y-16 pb-16">
                 <Hero />
