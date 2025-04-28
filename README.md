@@ -11,4 +11,6 @@ You'll need PHP (8.1+), Composer, and Node.js installed. To run the project:
 3. `touch database/database.sqlite` to create the database file
 4. `php artisan migrate:fresh` to setup the database tables
 5. `php artisan db:seed` to populate the database with demo data
-6. `composer dev:ssr` to boot up the app in SSR mode
+6. `cp .env.example .env`
+7. `php artisan key:generate` to generate an application key
+8. `composer dev:ssr` to boot up the app in SSR mode
