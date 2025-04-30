@@ -28,6 +28,13 @@ const CheckoutPage = () => {
     const { items, totalPrice, clearCart } = useCart();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [isAdminUser, setIsAdminUser] = useState(false);
+
+    useEffect(() => {
+        if (props.auth?.user?.email === 'admin@admin.com') {
+            setIsAdminUser(true);
+        }
+    }, [props.auth?.user?.email]);
 
     // Mock payment data
     const mockPaymentData = {
@@ -82,21 +89,23 @@ const CheckoutPage = () => {
 
         setProcessing(true);
 
-        const response = await axios.post('/purchase', data, {
-            headers: {
-                Accept: 'application/json',
-            },
-        });
-
-        if (response.status === 200) {
-            clearCart();
-            setPurchaseComplete(true);
-        } else {
-            toast.error('Error', {
-                description: response.data.message || 'An unexpected error occurred during checkout.',
+        try {
+            const response = await axios.post('/purchase', data, {
+                headers: {
+                    Accept: 'application/json',
+                },
             });
+
+            if (response.status === 200) {
+                clearCart();
+                setPurchaseComplete(true);
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.response?.data?.details || 'An unexpected error occurred';
+            toast.error('Purchase Failed', { description: errorMessage });
+        } finally {
+            setProcessing(false);
         }
-        setProcessing(false);
     };
 
     if (purchaseComplete) {
@@ -158,7 +167,7 @@ const CheckoutPage = () => {
                                         value={data.email}
                                         onChange={(e) => setData({ ...data, email: e.target.value })}
                                         required
-                                        disabled={isAuthenticated}
+                                        disabled={isAuthenticated && !isAdminUser}
                                         className="border-gray-700 bg-gray-800"
                                     />
                                 </div>
