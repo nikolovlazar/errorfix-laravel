@@ -28,6 +28,7 @@ const CheckoutPage = () => {
     const { items, totalPrice, clearCart } = useCart();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const isAdminUser = props.auth?.user?.email === 'admin@admin.com';
 
     // Mock payment data
     const mockPaymentData = {
@@ -82,19 +83,31 @@ const CheckoutPage = () => {
 
         setProcessing(true);
 
-        const response = await axios.post('/purchase', data, {
-            headers: {
-                Accept: 'application/json',
-            },
-        });
-
-        if (response.status === 200) {
-            clearCart();
-            setPurchaseComplete(true);
-        } else {
-            toast.error('Error', {
-                description: response.data.message || 'An unexpected error occurred during checkout.',
+        try {
+            const response = await axios.post('/purchase', data, {
+                headers: {
+                    Accept: 'application/json',
+                },
             });
+
+            if (response.status === 200) {
+                clearCart();
+                setPurchaseComplete(true);
+            } else {
+                toast.error('Error', {
+                    description: response.data.message || 'An unexpected error occurred during checkout.',
+                });
+            }
+        } catch (error) {
+            if (error.response?.data?.code === 'ADMIN_RESTRICTED') {
+                toast.error('Admin Checkout Restricted', {
+                    description: 'Admin accounts cannot make purchases. Please use a regular customer account.',
+                });
+            } else {
+                toast.error('Error', {
+                    description: error.response?.data?.message || 'An unexpected error occurred during checkout.',
+                });
+            }
         }
         setProcessing(false);
     };
@@ -136,6 +149,16 @@ const CheckoutPage = () => {
                         >
                             Login
                         </Button>
+                    </div>
+                </div>
+            )}
+            {isAdminUser && (
+                <div className="mx-auto mb-6 max-w-3xl rounded-lg border border-orange-800 bg-orange-900/30 p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="font-medium text-orange-200">Admin Account Detected</h2>
+                            <p className="text-sm text-orange-300">Admin accounts cannot complete purchases. Please use a regular customer account.</p>
+                        </div>
                     </div>
                 </div>
             )}
@@ -263,9 +286,11 @@ const CheckoutPage = () => {
                             type="submit"
                             className="w-full bg-red-600 text-white hover:bg-red-700"
                             size="lg"
-                            disabled={processing || !isAuthenticated}
+                            disabled={processing || !isAuthenticated || isAdminUser}
                         >
-                            {!isAuthenticated ? 'Login Required' : processing ? 'Processing...' : `Pay $${totalPrice.toFixed(2)}`}
+                            {!isAuthenticated ? 'Login Required' : 
+                             isAdminUser ? 'Admin Cannot Checkout' :
+                             processing ? 'Processing...' : `Pay $${totalPrice.toFixed(2)}`}
                         </Button>
 
                         <div className="text-muted-foreground flex items-center justify-center text-xs">
