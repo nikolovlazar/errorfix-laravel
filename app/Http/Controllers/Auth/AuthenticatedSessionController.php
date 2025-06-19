@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\JsonResponse;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -36,8 +35,8 @@ class AuthenticatedSessionController extends Controller
         // Just return JSON. No redirects. No Inertia. No nonsense.
         return response()->json([
             'success' => true,
-            'user' => Auth::user()
-        ]);
+            'user' => Auth::user(),
+        ], 201);
     }
 
     /**
@@ -49,6 +48,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true], 201);
     }
 }

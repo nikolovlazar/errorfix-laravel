@@ -17,7 +17,9 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $json = $response->json();
+    expect($json)->toHaveKeys(['success', 'user']);
+    expect($json['success'])->toBeTrue();
 });
 
 test('users can not authenticate with invalid password', function () {
